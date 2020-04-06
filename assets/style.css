@@ -1,0 +1,25 @@
+
+/* flaticon attribution = <div>Icons made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div> */
+
+#background {
+    background-image: url("images/background.png");
+    height: 800px;
+    width: 1200px;
+    position: relative;
+}
+
+#hero {
+    background-image: url("images/hero.png");
+    height: 50px;
+    width: 50px;
+    position: absolute;
+    top: 700px;
+    left: 550px;
+}
+
+.missile {
+    background-image: url("images/missile3.png");
+    height: 16px;
+    width: 10px;
+    position: absolute;
+}
