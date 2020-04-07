@@ -3,6 +3,8 @@
 
 #background {
     background-image: url("images/background.png");
+    background-size: cover;
+    background-repeat: no-repeat;
     height: 800px;
     width: 1200px;
     position: relative;
@@ -10,6 +12,7 @@
 
 #hero {
     background-image: url("images/hero.png");
+    background-size: cover;
     height: 50px;
     width: 50px;
     position: absolute;
@@ -17,8 +20,24 @@
     left: 550px;
 }
 
+.enemy {
+    background-image: url("images/enemy.png");
+    background-size: cover;
+    height: 50px;
+    width: 50px;
+    position: absolute;
+}
+
+#missiles {
+    height: 800px;
+    width: 1200px;
+    position: absolute;
+}
+
 .missile {
     background-image: url("images/missile3.png");
+    background-size: cover;
+    transform: rotate(180deg);
     height: 16px;
     width: 10px;
     position: absolute;
