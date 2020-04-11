@@ -4,24 +4,17 @@ var hero = {
     left: 550
 };
 
-var missiles = [];
+var rockets = [];
 
-var enemies = [
+var aliens = [
     { left: 200, top: 100 },
-    { left: 300, top: 100 },
+    { left: 300, top: 150 },
     { left: 400, top: 100 },
-    { left: 500, top: 100 },
+    { left: 500, top: 150 },
     { left: 600, top: 100 },
-    { left: 700, top: 100 },
+    { left: 700, top: 150 },
     { left: 800, top: 100 },
-    { left: 900, top: 100 },
-    { left: 200, top: 160 },
-    { left: 300, top: 160 },
-    { left: 400, top: 160 },
-    { left: 500, top: 160 },
-    { left: 600, top: 160 },
-    { left: 700, top: 160 },
-    { left: 800, top: 160 },
+    { left: 900, top: 150 },
 ];
 
 document.onkeydown = function (e) {
@@ -29,18 +22,29 @@ document.onkeydown = function (e) {
 
     if (e.keyCode === 37) {
         hero.left = hero.left - 10;
-        moveHero()
+        moveHero();
     }
     else if (e.keyCode === 39) {
         hero.left = hero.left + 10;
-        moveHero()
+        moveHero();
+    }
+    else if (e.keyCode === 40) {
+        hero.top = hero.top + 5;
+        console.log("DOWN");
+        moveHero();
+    }
+    else if (e.keyCode === 38) {
+        hero.top = hero.top + 5;
+        console.log("UP");
+        moveHero();
     }
     else if (e.keyCode === 32) {
-        missiles.push({
+        rockets.push({
             left: hero.left + 15,
-            top: hero.top
+            top: hero.top,
         })
-        drawMissiles()
+        console.log("FIRE");
+        drawRockets();
     }
 }
 
@@ -48,59 +52,59 @@ function moveHero() {
     document.getElementById('hero').style.left = hero.left + "px";
 }
 
-function drawMissiles() {
-    document.getElementById('missiles').innerHTML = "";
-    for (var missile = 0; missile < missiles.length; missile = missile + 1) {
-        document.getElementById('missiles').innerHTML +=
-            `<div class='missile' style='left:${missiles[missile].left}px; 
-                top:${missiles[missile].top}px;'></div>`;
+function drawRockets() {
+    document.getElementById('rockets').innerHTML = "";
+    for (var rocket = 0; rocket < rockets.length; rocket = rocket + 1) {
+        document.getElementById('rockets').innerHTML +=
+            `<div class='rocket' style='left:${rockets[rocket].left}px; 
+                top:${rockets[rocket].top}px;'></div>`;
     }
 }
 
-function moveMissiles() {
-    for (var missile = 0; missile < missiles.length; missile = missile + 1) {
-        missiles[missile].top = missiles[missile].top - 5;
+function moveRockets() {
+    for (var rocket = 0; rocket < rockets.length; rocket = rocket + 1) {
+        rockets[rocket].top = rockets[rocket].top - 5;
     }
 }
 
-function drawEnemies() {
-    document.getElementById('enemies').innerHTML = "";
-    for (var enemy = 0; enemy < enemies.length; enemy = enemy + 1) {
-        document.getElementById('enemies').innerHTML +=
-            `<div class='enemy' style='left:${enemies[enemy].left}px; 
-                top:${enemies[enemy].top}px;'></div>`;
+function drawAliens() {
+    document.getElementById('aliens').innerHTML = "";
+    for (var alien = 0; alien < aliens.length; alien = alien + 1) {
+        document.getElementById('aliens').innerHTML +=
+            `<div class='alien' style='left:${aliens[alien].left}px; 
+                top:${aliens[alien].top}px;'></div>`;
     }
 }
 
-function moveEnemies() {
-    for (var enemy = 0; enemy < enemies.length; enemy = enemy + 1) {
-        enemies[enemy].top = enemies[enemy].top + 2;
+function moveAliens() {
+    for (var alien = 0; alien < aliens.length; alien = alien + 1) {
+        aliens[alien].left = aliens[alien].left + 2;
     }
 }
 
 function collisionDetection() {
-    for (var enemy = 0; enemy < enemies.length; enemy = enemy + 1) {
-        for (var missile = 0; missile < missiles.length; missile = missile + 1) {
+    for (var alien = 0; alien < aliens.length; alien = alien + 1) {
+        for (var rocket = 0; rocket < rockets.length; rocket = rocket + 1) {
             if (
-                (missiles[missile].top <= enemies[enemy].top + 50) &&
-                (missiles[missile].top >= enemies[enemy].top) &&
-                (missiles[missile].left >= enemies[enemy].left) &&
-                (missiles[missile].left <= enemies[enemy].left + 50)
+                (rockets[rocket].top <= aliens[alien].top + 50) &&
+                (rockets[rocket].top >= aliens[alien].top) &&
+                (rockets[rocket].left >= aliens[alien].left) &&
+                (rockets[rocket].left <= aliens[alien].left + 50)
             ) {
                 console.log("HIT");
-                enemies.splice(enemy, 1);
-                missiles.splice(missile, 1);
+                aliens.splice(alien, 1);
+                rockets.splice(rocket, 1);
             }
         }
     }
 }
 
 function gameLoop() {
-    setTimeout(gameLoop, 100)
-    moveMissiles();
-    drawMissiles();
-    moveEnemies();
-    drawEnemies();
+    setTimeout(gameLoop, 50);
+    moveRockets();
+    drawRockets();
+    moveAliens();
+    drawAliens();
     collisionDetection();
 }
 gameLoop();

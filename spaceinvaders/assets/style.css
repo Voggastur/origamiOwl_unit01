@@ -20,7 +20,7 @@
     left: 550px;
 }
 
-.enemy {
+.alien {
     background-image: url("images/enemy.png");
     background-size: cover;
     height: 50px;
@@ -28,13 +28,13 @@
     position: absolute;
 }
 
-#missiles {
+#rockets {
     height: 800px;
     width: 1200px;
     position: absolute;
 }
 
-.missile {
+.rocket {
     background-image: url("images/missile3.png");
     background-size: cover;
     transform: rotate(180deg);
