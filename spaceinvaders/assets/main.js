@@ -63,7 +63,7 @@ function drawRockets() {
 
 function moveRockets() {
     for (var rocket = 0; rocket < rockets.length; rocket = rocket + 1) {
-        rockets[rocket].top = rockets[rocket].top - 5;
+        rockets[rocket].top = rockets[rocket].top - 8;
     }
 }
 
@@ -78,7 +78,7 @@ function drawAliens() {
 
 function moveAliens() {
     for (var alien = 0; alien < aliens.length; alien = alien + 1) {
-        aliens[alien].left = aliens[alien].left + 2;
+        aliens[alien].top = aliens[alien].top + 2;
     }
 }
 
