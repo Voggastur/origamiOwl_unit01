@@ -7,16 +7,34 @@
 </head>
 
 <body>
+	<h1 class="Space Invaders"></h1>
+	<!--
+        
+    <script type="text/javascript">
 
-	<div id="background">
+    function changeClass(){
 
-		<div id="hero"></div>
-		<div id="rockets"></div>
-		<div id="aliens"></div>
+        if ( document.getElementById("MyElement").className.match(/(?:^|\s)MyClass(?!\S)/) )
+        $('#MyElement').toggleClass('MyClass');
+    }
 
+</script>
+
+<button onclick="changeClass()">My Button</button>-->
+
+	<div class="gamecontainer">
+		<div id="background">
+
+			<div id="spaceship"></div>
+			<div id="rockets"></div>
+			<div id="aliens"></div>
+
+		</div>
 	</div>
 
-    <script src="assets/main.js"></script>
+	<script src="assets/main.js"></script>
+	<script src="https://code.jquery.com/jquery-3.4.1.min.js"
+		integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 
 </body>
 

@@ -1,6 +1,6 @@
 
-var hero = {
-    top: 700,
+var spaceship = {
+    top: 750,
     left: 550
 };
 
@@ -21,35 +21,37 @@ document.onkeydown = function (e) {
     console.log(e.keyCode);
 
     if (e.keyCode === 37) {
-        hero.left = hero.left - 10;
-        moveHero();
+        spaceship.left = spaceship.left - 10;
+        moveSpaceship();
     }
     else if (e.keyCode === 39) {
-        hero.left = hero.left + 10;
-        moveHero();
+        spaceship.left = spaceship.left + 10;
+        moveSpaceship();
     }
     else if (e.keyCode === 40) {
-        hero.top = hero.top + 5;
+        spaceship.top = spaceship.top + 5;
         console.log("DOWN");
-        moveHero();
+        moveSpaceship();
     }
     else if (e.keyCode === 38) {
-        hero.top = hero.top + 5;
+        spaceship.top = spaceship.top - 5;
         console.log("UP");
-        moveHero();
+        moveSpaceship();
     }
     else if (e.keyCode === 32) {
-        rockets.push({
-            left: hero.left + 15,
-            top: hero.top,
-        })
+        rockets.push(
+            {
+                left: spaceship.left + 15,
+                top: spaceship.top,
+            })
         console.log("FIRE");
         drawRockets();
     }
 }
 
-function moveHero() {
-    document.getElementById('hero').style.left = hero.left + "px";
+function moveSpaceship() {
+    document.getElementById('spaceship').style.top = spaceship.top + "px";
+    document.getElementById('spaceship').style.left = spaceship.left + "px";
 }
 
 function drawRockets() {
@@ -73,12 +75,20 @@ function drawAliens() {
         document.getElementById('aliens').innerHTML +=
             `<div class='alien' style='left:${aliens[alien].left}px; 
                 top:${aliens[alien].top}px;'></div>`;
+        if (aliens[alien].top >= 800 || aliens[alien].splice == aliens[8]) {
+            location.reload();
+        }
     }
 }
 
 function moveAliens() {
-    for (var alien = 0; alien < aliens.length; alien = alien + 1) {
-        aliens[alien].top = aliens[alien].top + 2;
+    for (var alien = 0; alien < aliens.length || aliens.left <= 1000; alien = alien + 1) {
+        aliens[alien].left = aliens[alien].left + 2;
+        if (aliens[alien].left >= 1000 || aliens[alien].left <= 50) {
+            aliens[alien].top + 2;
+            aliens[alien].left = aliens[alien].left - 2;
+            break;
+        }
     }
 }
 
@@ -100,11 +110,12 @@ function collisionDetection() {
 }
 
 function gameLoop() {
-    setTimeout(gameLoop, 50);
+    setTimeout(gameLoop, 25);
     moveRockets();
     drawRockets();
     moveAliens();
     drawAliens();
     collisionDetection();
 }
+
 gameLoop();
