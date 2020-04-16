@@ -1,8 +1,14 @@
 
+const w = document.getElementById("background").innerWidth;
+
 var spaceship = {
     top: 750,
     left: 550
 };
+
+var explosion = {img: 'images/explosion.png'};
+
+var lasers = [];
 
 var rockets = [];
 
@@ -15,6 +21,8 @@ var aliens = [
     { left: 700, top: 150 },
     { left: 800, top: 100 },
     { left: 900, top: 150 },
+    { left: 500, top: 100 },
+    { left: 700, top: 100 }
 ];
 
 document.onkeydown = function (e) {
@@ -41,60 +49,77 @@ document.onkeydown = function (e) {
     else if (e.keyCode === 32) {
         rockets.push(
             {
-                left: spaceship.left + 15,
+                left: spaceship.left + 20,
                 top: spaceship.top,
             })
-        console.log("FIRE");
+        console.log("FIRE ROCKET");
         drawRockets();
     }
-}
+    else if (e.keyCode === 17) {
+        lasers.push(
+            {
+                left: spaceship.left,
+                top: spaceship.top,
+            })
+        console.log("FIRE LASER");
+        drawLasers();
+    }
+};
 
 function moveSpaceship() {
     document.getElementById('spaceship').style.top = spaceship.top + "px";
     document.getElementById('spaceship').style.left = spaceship.left + "px";
-}
+};
 
 function drawRockets() {
-    document.getElementById('rockets').innerHTML = "";
+    document.getElementById('rockets').innerHTML = ""; // An empty string to put moving rocket images
     for (var rocket = 0; rocket < rockets.length; rocket = rocket + 1) {
         document.getElementById('rockets').innerHTML +=
             `<div class='rocket' style='left:${rockets[rocket].left}px; 
                 top:${rockets[rocket].top}px;'></div>`;
+        // rockets are pasted directly to the HTML with inline top-left styling with this for loop
     }
-}
+};
 
 function moveRockets() {
-    for (var rocket = 0; rocket < rockets.length; rocket = rocket + 1) {
+    for (var rocket = 0; rocket < rockets.length; rocket += 1) {
         rockets[rocket].top = rockets[rocket].top - 8;
     }
-}
+};
+
+function drawLasers() {
+    document.getElementById('lasers').innerHTML = ""; // An empty string to put moving laser images
+    for (var laser = 0; laser < lasers.length; laser += 1) {
+        document.getElementById('lasers').innerHTML +=
+            `<div class='laser' style='left:${lasers[laser].left}px; 
+                top:${lasers[laser].top}px;'></div>`;
+        // lasers are pasted directly to the HTML with inline styling with this for loop
+    }
+};
+
+function moveLasers() {
+    for (var laser = 0; laser < lasers.length; laser += 1) {
+        lasers[laser].top = lasers[laser].top - 14; // laser speed is set to move faster than the rockets
+    }
+};
 
 function drawAliens() {
-    document.getElementById('aliens').innerHTML = "";
-    for (var alien = 0; alien < aliens.length; alien = alien + 1) {
-        document.getElementById('aliens').innerHTML +=
-            `<div class='alien' style='left:${aliens[alien].left}px; 
-                top:${aliens[alien].top}px;'></div>`;
-        if (aliens[alien].top >= 800 || aliens[alien].splice == aliens[8]) {
-            location.reload();
-        }
+    document.getElementById('aliens').innerHTML = ""; // An empty string to put moving alien images
+    for (var alien = 0; alien < aliens.length; alien += 1) {// This for loop will draw as many aliens as there are in the array
+        document.getElementById('aliens').innerHTML += `<div class='alien' style='left:${aliens[alien].left}px; 
+        top:${aliens[alien].top}px;'></div>`; // aliens are pasted directly to the HTML via the id element #aliens which is styled as an overlay
     }
-}
+};
 
 function moveAliens() {
-    for (var alien = 0; alien < aliens.length || aliens.left <= 1000; alien = alien + 1) {
-        aliens[alien].left = aliens[alien].left + 2;
-        if (aliens[alien].left >= 1000 || aliens[alien].left <= 50) {
-            aliens[alien].top + 2;
-            aliens[alien].left = aliens[alien].left - 2;
-            break;
-        }
+    for (var alien = 0; alien < aliens.length; alien += 1) {
+        aliens[alien].left += 2;
     }
-}
+};
 
 function collisionDetection() {
-    for (var alien = 0; alien < aliens.length; alien = alien + 1) {
-        for (var rocket = 0; rocket < rockets.length; rocket = rocket + 1) {
+    for (var alien = 0; alien < aliens.length; alien += 1) {
+        for (var rocket = 0; rocket < rockets.length; rocket += 1) {
             if (
                 (rockets[rocket].top <= aliens[alien].top + 50) &&
                 (rockets[rocket].top >= aliens[alien].top) &&
@@ -106,16 +131,30 @@ function collisionDetection() {
                 rockets.splice(rocket, 1);
             }
         }
+        for (var laser = 0; laser < lasers.length; laser += 1) {
+            if (
+                (lasers[laser].top <= aliens[alien].top + 50) &&
+                (lasers[laser].top >= aliens[alien].top) &&
+                (lasers[laser].left >= aliens[alien].left) &&
+                (lasers[laser].left <= aliens[alien].left + 50)
+            ) {
+                console.log("HIT");
+                aliens.splice(alien, 1); // Remove alien when hit
+                lasers.splice(laser, 1); // Remove laser when hit
+            }
+        }
     }
-}
+};
 
 function gameLoop() {
-    setTimeout(gameLoop, 25);
+    setTimeout(gameLoop, 30);
     moveRockets();
     drawRockets();
+    moveLasers();
+    drawLasers();
     moveAliens();
     drawAliens();
     collisionDetection();
-}
+};
 
 gameLoop();
