@@ -1,5 +1,5 @@
 $(overlay).on("click", function () {
-    $(overlay).css("opacity", "0.5");
+    $(".grid").css("background-color", "azure");
 });
 
 overlay = document.getElementById("overlay");

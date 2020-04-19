@@ -1,3 +1,7 @@
+$("document").ready(function() {
+    $(".button").click(function(){
+        $(".buttoncontainer").slideUp("slow");
+    });
 
 const background = document.getElementById("background");
 const width = background.innerWidth;
@@ -160,3 +164,4 @@ function gameLoop() {
 
 gameLoop();
 
+});
