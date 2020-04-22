@@ -2,10 +2,15 @@ $(document).ready(function () {
     $(".button").click(function () {
         $(".buttoncontainer").slideUp("slow");
         $("#background").show();
+        $("#score").html("Score:" + scoreCount);
         setInterval(gameLoop, 50);
         gameLoop();
     });
 });
+
+// window.location.assign(http://...game.html?score=3) ----- one way to remember score between rounds //
+
+var scoreCount = 0;
 
 var spaceship = {
     top: 400,
@@ -17,7 +22,6 @@ var lasers = [];
 var rockets = [];
 
 var aliens = [
-    { left: 1150, top: 200 },
     { left: 1150, top: 250 },
     { left: 1150, top: 300 },
     { left: 1150, top: 350 },
@@ -25,11 +29,8 @@ var aliens = [
     { left: 1150, top: 450 },
     { left: 1150, top: 500 },
     { left: 1150, top: 550 },
-    { left: 1150, top: 600 },
-    { left: 1150, top: 650 }
+    { left: 1150, top: 600 }
 ];
-
-var score;
 
 function moveSpaceship() {
     $("#spaceship").css("top", spaceship.top + "px");
@@ -40,11 +41,12 @@ $(document).keydown(function (e) {
     console.log(e.keyCode);
 
     if (e.keyCode === 37) {
-
-        spaceship.left = spaceship.left - 10;
+        console.log("LEFT");
+        spaceship.left = spaceship.left - 5;
         moveSpaceship();
     } else if (e.keyCode === 39) {
-        spaceship.left = spaceship.left + 10;
+        console.log("RIGHT");
+        spaceship.left = spaceship.left + 5;
         moveSpaceship();
     } else if (e.keyCode === 40) {
         spaceship.top = spaceship.top + 10;
@@ -72,7 +74,7 @@ $(document).keydown(function (e) {
 });
 
 function drawRockets() {
-    document.getElementById("rockets").innerHTML = ""; // An empty string to put moving rocket images
+    document.getElementById("rockets").innerHTML = ""; // An empty string is set to remove the image from the last loop, before the new paste
     for (var rocket = 0; rocket < rockets.length; rocket = rocket + 1) {
         document.getElementById(
             "rockets"
@@ -80,16 +82,16 @@ function drawRockets() {
                 top:${rockets[rocket].top}px;'></div>`;
         // rockets are pasted directly onto the HTML using template literals
     }
-}
+};
 
 function moveRockets() {
     for (var rocket = 0; rocket < rockets.length; rocket += 1) {
-        rockets[rocket].left = rockets[rocket].left + 8;
+        rockets[rocket].left += 8;
     }
-}
+};
 
 function drawLasers() {
-    document.getElementById("lasers").innerHTML = ""; // An empty string to put moving laser images
+    document.getElementById("lasers").innerHTML = ""; // An empty string is set to remove the image from the last loop, before the new paste
     for (var laser = 0; laser < lasers.length; laser += 1) {
         document.getElementById(
             "lasers"
@@ -106,67 +108,73 @@ function moveLasers() {
 }
 
 function drawAliens() {
-    document.getElementById("aliens").innerHTML = "";
-    // An empty string to put moving alien images
+    document.getElementById("aliens").innerHTML = ""; // An empty string is set to remove the image from the last loop, before the new paste
     for (var alien = 0; alien < aliens.length; alien += 1) {
         // This for loop will draw as many aliens as there are in the array
-        document.getElementById(
-            "aliens"
-        ).innerHTML += `<div class='alien' style='left:${aliens[alien].left}px; 
+        document.getElementById("aliens").innerHTML += `<div class='alien' style='left:${aliens[alien].left}px; 
         top:${aliens[alien].top}px;'></div>`;
         // aliens are pasted directly to the HTML inside the id element #aliens which is styled as an overlay, using the position of
     }
-}
+};
 
-var alienStep = 5;
-var alienDirection = 1;
-const height = $("#background").height() - 10;
-const width = $("#background").width() - 10;
+var alienStep = -25;
+var alienDirection = 2;
+const height = $("#background").height();
+const width = $("#background").width();
 
 function moveAliens() {
     for (var alien = 0; alien < aliens.length; alien += 1) {
         aliens[alien].top += alienDirection;
-        if (aliens[alien].top > height) {
+        if (aliens[alien].top > 800 || aliens[alien].top < 0) {
             switch (alienDirection) {
-                case 1:
-                    alienDirection += -2;
+                case 2:
+                    alienDirection += -4;
+                    alienAxis();
                     break;
-                case -1:
-                    alienDirection += 2;
+                case -2:
+                    alienDirection += 4;
+                    alienAxis();
                     break;
-            }
-        }
-    }
-}
+            };
+        };
+    };
+    function alienAxis() {
+        for (var alien = 0; alien < aliens.length; alien += 1)
+            aliens[alien].left += alienStep;
+    };
+};
 
 function collisionDetection() {
     for (var alien = 0; alien < aliens.length; alien += 1) {
         for (var rocket = 0; rocket < rockets.length; rocket += 1) {
-            if (
-                rockets[rocket].left <= aliens[alien].left + 30 &&
+            if (rockets[rocket].left <= aliens[alien].left + 30 &&
                 rockets[rocket].left >= aliens[alien].left &&
                 rockets[rocket].top >= aliens[alien].top &&
-                rockets[rocket].top <= aliens[alien].top + 30
-            ) {
-                console.log("HIT");
+                rockets[rocket].top <= aliens[alien].top + 30) {
+                console.log("ROCKETHIT");
                 aliens.splice(alien, 1); // Remove corresponding laser when matched
                 rockets.splice(rocket, 1); // Remove corresponding laser when matched
-            }
-        }
+                break;
+            };
+        };
         for (var laser = 0; laser < lasers.length; laser += 1) {
-            if (
-                lasers[laser].left <= aliens[alien].left + 30 &&
+            if (lasers[laser].left <= aliens[alien].left + 30 &&
                 lasers[laser].left >= aliens[alien].left &&
                 lasers[laser].top >= aliens[alien].top &&
-                lasers[laser].top <= aliens[alien].top + 30
-            ) {
-                console.log("HIT");
-                aliens.slice(alien, 1); // Remove corresponding alien when matched
-                lasers.slice(laser, 1); // Remove corresponding laser when matched
-            }
-        }
-    }
-}
+                lasers[laser].top <= aliens[alien].top + 30) {
+                console.log("LASERHIT");
+                aliens.splice(alien, 1); // Remove corresponding alien when matched
+                lasers.splice(laser, 1); // Remove corresponding laser when matched
+                break;
+            };
+        };
+    };
+    if (aliens[alien].length -= 1) {
+        $(scoreCount).toNumber(scoreCount + 1);
+        return scoreCount;
+    };
+};
+
 
 function gameLoop() {
     moveRockets();
@@ -176,5 +184,5 @@ function gameLoop() {
     moveAliens();
     drawAliens();
     collisionDetection();
-}
+};
 
