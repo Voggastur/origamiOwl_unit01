@@ -86,7 +86,7 @@ function drawRockets() {
 
 function moveRockets() {
     for (var rocket = 0; rocket < rockets.length; rocket += 1) {
-        rockets[rocket].left += 8;
+        rockets[rocket].left += 8; // rocket speed is slower than lasers but planned to have increased damage or a splash damage zone
     }
 };
 
@@ -170,11 +170,10 @@ function collisionDetection() {
         };
     };
     if (aliens[alien].length -= 1) {
-        $(scoreCount).toNumber(scoreCount + 1);
-        return scoreCount;
+        $(scoreCount).data(scoreCount + 1);
+        return parseInt(scoreCount);
     };
 };
-
 
 function gameLoop() {
     moveRockets();
@@ -185,4 +184,3 @@ function gameLoop() {
     drawAliens();
     collisionDetection();
 };
-
