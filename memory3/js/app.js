@@ -78,7 +78,7 @@ function rating(moves) {
     return { score: rating };
 }
 
-// Add boostrap modal alert window showing time, moves, score it took to finish the game, toggles when all pairs are matched.
+// Add bootstrap modal alert window showing time, moves, score it took to finish the game, toggles when all pairs are matched.
 function gameOver(moves, score) {
     $('#winnerText').text(`In ${second} seconds, you did a total of ${moves} moves with a score of ${score}. Well done!`);
     $('#winnerModal').modal('toggle');

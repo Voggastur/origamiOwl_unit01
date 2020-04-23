@@ -2,7 +2,7 @@ $(document).ready(function () {
     $(".button").click(function () {
         $(".buttoncontainer").slideUp("slow");
         $("#background").show();
-        $("#score").html("Score:" + scoreCount);
+        $("#score").html("Score " + score);
         setInterval(gameLoop, 50);
         gameLoop();
     });
@@ -10,12 +10,7 @@ $(document).ready(function () {
 
 // window.location.assign(http://...game.html?score=3) ----- one way to remember score between rounds //
 
-var scoreCount = 0;
-
-var spaceship = {
-    top: 400,
-    left: 100,
-};
+var score = 0;
 
 var lasers = [];
 
@@ -31,6 +26,11 @@ var aliens = [
     { left: 1150, top: 550 },
     { left: 1150, top: 600 }
 ];
+
+var spaceship = {
+    top: 400,
+    left: 100,
+};
 
 function moveSpaceship() {
     $("#spaceship").css("top", spaceship.top + "px");
@@ -86,7 +86,7 @@ function drawRockets() {
 
 function moveRockets() {
     for (var rocket = 0; rocket < rockets.length; rocket += 1) {
-        rockets[rocket].left += 8; // rocket speed is slower than lasers but planned to have increased damage or a splash damage zone
+        rockets[rocket].left += 10; // rocket speed is slower than lasers but planned to have increased damage or a splash damage zone
     }
 };
 
@@ -103,17 +103,23 @@ function drawLasers() {
 
 function moveLasers() {
     for (var laser = 0; laser < lasers.length; laser += 1) {
-        lasers[laser].left = lasers[laser].left + 14; // laser speed is set to move faster than the rockets
+        lasers[laser].left += 14; // laser speed is set to move faster than the rockets
     }
 }
+
+function drawEnemyLasers() {
+    for (var enemyLaser = 0; enemyLaser < enemyLasers.length; enemyLaser += 1) {
+        (Math.random(Math.floor) + 4)
+    }
+};
 
 function drawAliens() {
     document.getElementById("aliens").innerHTML = ""; // An empty string is set to remove the image from the last loop, before the new paste
     for (var alien = 0; alien < aliens.length; alien += 1) {
-        // This for loop will draw as many aliens as there are in the array
+        // This for loop will repeat for as many aliens are in the array (8)
         document.getElementById("aliens").innerHTML += `<div class='alien' style='left:${aliens[alien].left}px; 
         top:${aliens[alien].top}px;'></div>`;
-        // aliens are pasted directly to the HTML inside the id element #aliens which is styled as an overlay, using the position of
+        // aliens are pasted directly to the HTML inside the id element #aliens which is styled as an overlay, using the position of the replaced alien
     }
 };
 
@@ -147,31 +153,31 @@ function moveAliens() {
 function collisionDetection() {
     for (var alien = 0; alien < aliens.length; alien += 1) {
         for (var rocket = 0; rocket < rockets.length; rocket += 1) {
-            if (rockets[rocket].left <= aliens[alien].left + 30 &&
-                rockets[rocket].left >= aliens[alien].left &&
+            if (rockets[rocket].top <= aliens[alien].top - 30 &&
                 rockets[rocket].top >= aliens[alien].top &&
-                rockets[rocket].top <= aliens[alien].top + 30) {
+                rockets[rocket].left >= aliens[alien].left &&
+                rockets[rocket].left <= aliens[alien].left) {
+                    // Collision occured, remove weapon and alien from game, add a point to score
                 console.log("ROCKETHIT");
-                aliens.splice(alien, 1); // Remove corresponding laser when matched
-                rockets.splice(rocket, 1); // Remove corresponding laser when matched
-                break;
+                score = score + 1;
+                aliens.splice(alien, 1);
+                rockets.splice(rocket, 1);
+                return score;
             };
         };
         for (var laser = 0; laser < lasers.length; laser += 1) {
-            if (lasers[laser].left <= aliens[alien].left + 30 &&
-                lasers[laser].left >= aliens[alien].left &&
+            if (lasers[laser].top <= aliens[alien].top - 30 &&
                 lasers[laser].top >= aliens[alien].top &&
-                lasers[laser].top <= aliens[alien].top + 30) {
+                lasers[laser].left >= aliens[alien].left &&
+                lasers[laser].left <= aliens[alien].left) {
+                    // Collision occured, remove weapon and alien from game, add a point to score
                 console.log("LASERHIT");
-                aliens.splice(alien, 1); // Remove corresponding alien when matched
-                lasers.splice(laser, 1); // Remove corresponding laser when matched
-                break;
+                score = score + 1;
+                aliens.splice(alien, 1);
+                lasers.splice(laser, 1);
+                return score;
             };
         };
-    };
-    if (aliens[alien].length -= 1) {
-        $(scoreCount).data(scoreCount + 1);
-        return parseInt(scoreCount);
     };
 };
 
