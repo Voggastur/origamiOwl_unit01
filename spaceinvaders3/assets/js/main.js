@@ -17,14 +17,14 @@ var lasers = [];
 var rockets = [];
 
 var aliens = [
-    { left: 1150, top: 250 },
-    { left: 1150, top: 300 },
-    { left: 1150, top: 350 },
-    { left: 1150, top: 400 },
-    { left: 1150, top: 450 },
-    { left: 1150, top: 500 },
-    { left: 1150, top: 550 },
-    { left: 1150, top: 600 }
+    { left: 1150, top: 250, height: 30, width: 30 },
+    { left: 1150, top: 300, height: 30, width: 30 },
+    { left: 1150, top: 350, height: 30, width: 30 },
+    { left: 1150, top: 400, height: 30, width: 30 },
+    { left: 1150, top: 450, height: 30, width: 30 },
+    { left: 1150, top: 500, height: 30, width: 30 },
+    { left: 1150, top: 550, height: 30, width: 30 },
+    { left: 1150, top: 600, height: 30, width: 30 }
 ];
 
 var spaceship = {
@@ -32,7 +32,7 @@ var spaceship = {
     left: 100,
 };
 
-function moveSpaceship() {
+function moveSpaceship() { // moveSpaceship() function is called every time we do a keydown in the next function, and this function specifies the new top/left coordinates for movement
     $("#spaceship").css("top", spaceship.top + "px");
     $("#spaceship").css("left", spaceship.left + "px");
 }
@@ -40,20 +40,13 @@ function moveSpaceship() {
 $(document).keydown(function (e) {
     console.log(e.keyCode);
 
-    if (e.keyCode === 37) {
-        console.log("LEFT");
-        spaceship.left = spaceship.left - 5;
-        moveSpaceship();
-    } else if (e.keyCode === 39) {
-        console.log("RIGHT");
-        spaceship.left = spaceship.left + 5;
-        moveSpaceship();
-    } else if (e.keyCode === 40) {
-        spaceship.top = spaceship.top + 10;
+
+    if (e.keyCode === 40) {
+        spaceship.top += 10;
         console.log("DOWN");
         moveSpaceship();
     } else if (e.keyCode === 38) {
-        spaceship.top = spaceship.top - 10;
+        spaceship.top -= 10;
         console.log("UP");
         moveSpaceship();
     } else if (e.keyCode === 32) {
@@ -62,25 +55,25 @@ $(document).keydown(function (e) {
             left: spaceship.left
         });
         console.log("FIRE ROCKET");
-        drawRockets();
+        pushRockets();
     } else if (e.keyCode === 17) {
         lasers.push({
             top: spaceship.top - 70,
             left: spaceship.left
         });
         console.log("FIRE LASER");
-        drawLasers();
+        pushLasers();
     }
 });
 
-function drawRockets() {
-    document.getElementById("rockets").innerHTML = ""; // An empty string is set to remove the image from the last loop, before the new paste
-    for (var rocket = 0; rocket < rockets.length; rocket = rocket + 1) {
+function pushRockets() {
+    document.getElementById("rockets").innerHTML = ""; // An empty string is set to remove the image from the last loop, before the new paste is made
+    for (var rocket = 0; rocket < rockets.length; rocket += 1) {
         document.getElementById(
             "rockets"
         ).innerHTML += `<div class='rocket' style='left:${rockets[rocket].left}px; 
                 top:${rockets[rocket].top}px;'></div>`;
-        // rockets are pasted directly onto the HTML using template literals
+        // rockets are pasted onto HTML using handy template literals
     }
 };
 
@@ -90,14 +83,14 @@ function moveRockets() {
     }
 };
 
-function drawLasers() {
+function pushLasers() {
     document.getElementById("lasers").innerHTML = ""; // An empty string is set to remove the image from the last loop, before the new paste
     for (var laser = 0; laser < lasers.length; laser += 1) {
         document.getElementById(
             "lasers"
         ).innerHTML += `<div class='laser' style='left:${lasers[laser].left}px;
     top:${lasers[laser].top}px;'></div>`;
-        // lasers are pasted the same way
+        // lasers are pasted the same way as rockets
     }
 }
 
@@ -107,9 +100,9 @@ function moveLasers() {
     }
 }
 
-function drawEnemyLasers() {
+function pushEnemyLasers() {
     for (var enemyLaser = 0; enemyLaser < enemyLasers.length; enemyLaser += 1) {
-        (Math.random(Math.floor) + 4)
+        (Math.random(Math.floor) + 7)
     }
 };
 
@@ -123,7 +116,7 @@ function drawAliens() {
     }
 };
 
-var alienStep = -25;
+var alienStep = -20;
 var alienDirection = 2;
 const height = $("#background").height();
 const width = $("#background").width();
@@ -156,26 +149,24 @@ function collisionDetection() {
             if (rockets[rocket].top <= aliens[alien].top - 30 &&
                 rockets[rocket].top >= aliens[alien].top &&
                 rockets[rocket].left >= aliens[alien].left &&
-                rockets[rocket].left <= aliens[alien].left) {
-                    // Collision occured, remove weapon and alien from game, add a point to score
+                rockets[rocket].left <= aliens[alien].left - 30) {
+                // Collision has occured, remove weapon and alien from game, add a point to score
                 console.log("ROCKETHIT");
-                score = score + 1;
                 aliens.splice(alien, 1);
                 rockets.splice(rocket, 1);
-                return score;
+                break;
             };
         };
         for (var laser = 0; laser < lasers.length; laser += 1) {
             if (lasers[laser].top <= aliens[alien].top - 30 &&
                 lasers[laser].top >= aliens[alien].top &&
                 lasers[laser].left >= aliens[alien].left &&
-                lasers[laser].left <= aliens[alien].left) {
-                    // Collision occured, remove weapon and alien from game, add a point to score
+                lasers[laser].left <= aliens[alien].left - 30) {
+                // Collision occured, remove weapon and alien from game, add a point to score
                 console.log("LASERHIT");
-                score = score + 1;
                 aliens.splice(alien, 1);
                 lasers.splice(laser, 1);
-                return score;
+                break;
             };
         };
     };
@@ -183,9 +174,9 @@ function collisionDetection() {
 
 function gameLoop() {
     moveRockets();
-    drawRockets();
+    pushRockets();
     moveLasers();
-    drawLasers();
+    pushLasers();
     moveAliens();
     drawAliens();
     collisionDetection();
