@@ -4,7 +4,7 @@ $(document).ready(function () {
         $("#background").show();
         $("#score").html("Score " + score);
         setInterval(gameLoop, 50);
-        setInterval(pushBombs, 100);
+        setInterval(energyBombs, 100);
         gameLoop();
     });
 });
@@ -128,7 +128,7 @@ function drawAliens() {
     }
 };
 
-var alienStep = - 3;
+var alienStep = - 30;
 var alienDirection = 3;
 const height = $("#background").height();
 const width = $("#background").width();
@@ -155,7 +155,7 @@ function moveAliens() {
     };
 };
 
-function collisionDetection() {
+function collisionDetection(score) {
     for (var alien = 0; alien < aliens.length; alien += 1) {
         for (var rocket = 0; rocket < rockets.length; rocket += 1) {
             if (rockets[rocket].top <= aliens[alien].top - 30 &&
@@ -166,7 +166,7 @@ function collisionDetection() {
                 aliens.splice(alien, 1);
                 rockets.splice(rocket, 1);
                 console.log("ROCKETHIT");
-                var score;
+                var score = 0;
                 ++score;
                 return score; // I try to return score to my variable and show it but it's not working, score keeps showing 0
             };
@@ -184,15 +184,20 @@ function collisionDetection() {
                 ++score;
                 return score; // I try to return score to my variable and show it but it's not working, score keeps showing 0
             };
+            if (aliens[alien].length < 1) {
+                $('#winnerText').text('Congratulations, your score is ${score}');
+                $('#winnerModal').modal('toggle');
+            }
         };
     };
 };
 
 function gameOver() {
     if (aliens[alien].length < 1) {
-
+        $('#winnerText').text('Congratulations, your score is ${score}');
+        $('#winnerModal').modal('toggle');
     }
-}
+};
 
 function gameLoop() {
     moveRockets();
