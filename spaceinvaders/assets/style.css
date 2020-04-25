@@ -77,7 +77,7 @@ body {
     background-image: url("images/laser.png");
     background-size: cover;
     height: 10px;
-    width: 4px;
+    width: 5px;
     position: absolute;
 }
 
