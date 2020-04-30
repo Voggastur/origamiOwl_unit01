@@ -5,7 +5,7 @@ $(document).ready(function () {
         $("#score").html("Score " + score);
         setInterval(triggerBombs, 1500)
         triggerBombs();
-        setInterval(gameLoop, 30);
+        setInterval(gameLoop, 50);
         gameLoop();
     });
 });
@@ -20,6 +20,8 @@ var rockets = [];
 
 var energy = [];
 
+var explosions = [];
+
 var aliens = [
     { left: 1150, top: 250, height: 30, width: 30 },
     { left: 1150, top: 300, height: 30, width: 30 },
@@ -28,8 +30,18 @@ var aliens = [
     { left: 1150, top: 450, height: 30, width: 30 },
     { left: 1150, top: 500, height: 30, width: 30 },
     { left: 1150, top: 550, height: 30, width: 30 },
-    { left: 1150, top: 600, height: 30, width: 30 }
+    { left: 1150, top: 600, height: 30, width: 30 },
+    { left: 1050, top: 350, height: 30, width: 30 },
+    { left: 1050, top: 400, height: 30, width: 30 },
+    { left: 1050, top: 450, height: 30, width: 30 },
+    { left: 1050, top: 500, height: 30, width: 30 }    
 ];
+
+var alienStep = - 50;
+var alienDirection = 3;
+
+const height = $("#background").height();
+const width = $("#background").width();
 
 var spaceship = { top: 400, left: 100 };
 
@@ -131,17 +143,12 @@ function moveBombs() {
 function drawAliens() {
     document.getElementById("aliens").innerHTML = ""; // An empty string is set to remove the image from the last loop, before the new paste
     for (var alien = 0; alien < aliens.length; alien += 1) {
-        // This for loop will repeat for as many aliens are in the array (8)
+        // This for loop will repeat for as many aliens there are, in every interval
         document.getElementById("aliens").innerHTML += `<div class='alien' style='left:${aliens[alien].left}px; 
         top:${aliens[alien].top}px;'></div>`;
         // aliens are pasted directly to the HTML inside the id element #aliens which is styled as an overlay, using the position of the replaced alien
     };
 };
-
-var alienStep = - 30;
-var alienDirection = 3;
-const height = $("#background").height();
-const width = $("#background").width();
 
 function moveAliens() {
     for (var alien = 0; alien < aliens.length; alien += 1) {
@@ -165,31 +172,36 @@ function moveAliens() {
     };
 };
 
+// var explosion = document.getElementById("explosions").innerHTML += `<div class='explosion' style='left:${aliens[alien].left}px; top:${aliens[alien].top}px;'></div>`;
+// var explosion = $("#explosions").innerHTML += `<div class='explosion' style='left:${aliens[alien].left}px; top:${aliens[alien].top}px;'></div>`;
+
 function collisionDetection() {
     for (var alien = 0; alien < aliens.length; alien += 1) {
         for (var rocket = 0; rocket < rockets.length; rocket += 1) {
             if (rockets[rocket].top <= aliens[alien].top - 30 &&
                 rockets[rocket].top >= aliens[alien].top - 60 &&
-                rockets[rocket].left >= aliens[alien].left - 10 &&
-                rockets[rocket].left <= aliens[alien].left + 10) {
+                rockets[rocket].left >= aliens[alien].left &&
+                rockets[rocket].left <= aliens[alien].left + 20) {
                 // Collision has occured, remove weapon and alien from game, increment score
                 aliens.splice(alien, 2);
-                rockets.splice(rocket, 1);
+                rockets.splice(rocket, 2);
                 console.log("ROCKETHIT");
                 ++score;
+                console.log(score);
                 return score; // I try to return score to my variable and show it but it's not working, score keeps showing 0
             };
         };
         for (var laser = 0; laser < lasers.length; laser += 1) {
             if (lasers[laser].top <= aliens[alien].top - 30 &&
                 lasers[laser].top >= aliens[alien].top - 60 &&
-                lasers[laser].left >= aliens[alien].left - 10 &&
-                lasers[laser].left <= aliens[alien].left + 10) {
+                lasers[laser].left >= aliens[alien].left &&
+                lasers[laser].left <= aliens[alien].left + 20) {
                 // Collision occured, remove weapon and alien from game, increment score
                 aliens.splice(alien, 1);
                 lasers.splice(laser, 1);
                 console.log("LASERHIT");
                 ++score;
+                console.log(score);
                 return score; // I try to return score to my variable and show it but it's not working, score keeps showing 0
             };
         };
@@ -198,10 +210,10 @@ function collisionDetection() {
 
 function gameOver() {
     if (aliens.length == 0 ||
-        spaceship.top <= energybomb.top + 15 &&
-        spaceship.top >= energybomb.top &&
-        spaceship.left >= energybomb.left &&
-        spaceship.left <= energybomb.left + 15) {
+        spaceship.top <= energy[energybomb].top + 30 &&
+        spaceship.top >= energy[energybomb].top &&
+        spaceship.left >= energy[energybomb].left &&
+        spaceship.left <= energy[energybomb].left + 30) {
         $(".buttoncontainer").slideDown("slow");
     };
 };
