@@ -10,46 +10,18 @@ $(document).ready(function () {
     });
 });
 
-
-
-const FPS = 30; // frames per second
-const FRICTION = 0.7; // friction coefficient of space (0 = no friction, 1 = lots of friction)
-const GAME_LIVES = 3; // starting number of lives
-const LASER_DIST = 0.6; // max distance laser can travel as fraction of screen width
-const LASER_EXPLODE_DUR = 0.1; // duration of the lasers' explosion in seconds
-const LASER_MAX = 10; // maximum number of lasers on screen at once
-const LASER_SPD = 500; // speed of lasers in pixels per second
-const ROID_JAG = 0.4; // jaggedness of the asteroids (0 = none, 1 = lots)
-const ROID_PTS_LGE = 20; // points scored for a large asteroid
-const ROID_PTS_MED = 50; // points scored for a medium asteroid
-const ROID_PTS_SML = 100; // points scored for a small asteroid
-const ROID_NUM = 3; // starting number of asteroids
-const ROID_SIZE = 100; // starting size of asteroids in pixels
-const ROID_SPD = 50; // max starting speed of asteroids in pixels per second
-const ROID_VERT = 10; // average number of vertices on each asteroid
-const SAVE_KEY_SCORE = "highscore"; // save key for local storage of high score
-const SHIP_BLINK_DUR = 0.1; // duration in seconds of a single blink during ship's invisibility
-const SHIP_EXPLODE_DUR = 0.3; // duration of the ship's explosion in seconds
-const SHIP_INV_DUR = 3; // duration of the ship's invisibility in seconds
-const SHIP_SIZE = 30; // ship height in pixels
-const SHIP_THRUST = 5; // acceleration of the ship in pixels per second per second
-const SHIP_TURN_SPD = 360; // turn speed in degrees per second
-const SHOW_BOUNDING = false; // show or hide collision bounding
-const SHOW_CENTRE_DOT = false; // show or hide ship's centre dot
-const TEXT_FADE_TIME = 2.5; // text fade time in seconds
-const TEXT_SIZE = 40; // text font height in pixels
-
 // window.location.assign(http://...game.html?score=3) ----- one way to remember score between rounds //
 
 var score = 0;
 
 var lasers = [];
+var maxLasers = 5;
 
 var rockets = [];
+const maxRockets = 5;
 
 var energy = [];
-
-var explosions = [];
+const maxEnergy = 3;
 
 var aliens = [
     { left: 1150, top: 250, height: 30, width: 30 },
@@ -66,18 +38,23 @@ var aliens = [
     { left: 1050, top: 500, height: 30, width: 30 }
 ];
 
-var alienStep = - 50;
-var alienDirection = 3;
+var alienStep = - 50; // As aliens touch the boundaries on the transversal path, they will take a step -50 closer to the player
+var alienDirection = 3; // Direction of aliens will switch from either +3 or -3 as they touch the boundaries
 
 const height = $("#background").height();
 const width = $("#background").width();
+console.log(height, width);
 
-var spaceship = { top: 400, left: 100 };
-
-function moveSpaceship() { // moveSpaceship() function is called every time we do a keydown in the next function, this function specifies the new top/left coordinates on screen
-    $("#spaceship").css("top", spaceship.top + "px");
-    $("#spaceship").css("left", spaceship.left + "px");
-}
+var spaceship = {
+    top: 400,
+    left: 100,
+    x: 0,
+    y: 0,
+    width: 30,
+    height: 30,
+    lasers: [],
+    rockets: []
+};
 
 $(document).keydown(function (e) {
     console.log(e.keyCode);
@@ -89,6 +66,14 @@ $(document).keydown(function (e) {
     } else if (e.keyCode === 38) {
         spaceship.top -= 10;
         console.log("UP");
+        moveSpaceship();
+    } else if (e.keyCode === 37) {
+        spaceship.left -= 5;
+        console.log("LEFT");
+        moveSpaceship();
+    } else if (e.keyCode === 39) {
+        spaceship.left += 5;
+        console.log("RIGHT");
         moveSpaceship();
     } else if (e.keyCode === 32) {
         rockets.push({
@@ -104,16 +89,13 @@ $(document).keydown(function (e) {
         });
         console.log("FIRE LASER");
         pushLasers();
-    } else if (e.keyCode === 37) {
-        spaceship.left -= 5;
-        console.log("LEFT");
-        moveSpaceship();
-    } else if (e.keyCode === 39) {
-        spaceship.left += 5;
-        console.log("RIGHT");
-        moveSpaceship();
-    };
+    }
 });
+
+function moveSpaceship() { // moveSpaceship() function is called every time we do a keydown in the former function, this function specifies the new top/left coordinates on screen
+    $("#spaceship").css("top", spaceship.top + "px");
+    $("#spaceship").css("left", spaceship.left + "px");
+}
 
 function pushRockets() {
     document.getElementById("rockets").innerHTML = ""; // An empty string is set to remove the image from the last loop, before the new paste is made
@@ -145,7 +127,7 @@ function moveLasers() {
 };
 
 function triggerBombs() {
-    for (var alien = 0; alien < aliens.length; alien += 1) {
+    for (var energy = 0; energybomb < energy.length; energybomb += 1) {
         energy.push({
             top: aliens[0].top,
             left: aliens[0].left
@@ -156,10 +138,10 @@ function triggerBombs() {
 
 function pushBombs() { // this function handles the enemy weapons
     document.getElementById("energy").innerHTML = "";
-    for (var energybomb = 0; energybomb < energy.length; energybomb += 1) {
+    for (var alien = 0; alien < aliens.length; alien += 1) {
         document.getElementById("energy").innerHTML += `<div class='energybomb' style='left:${energy[energybomb].left}px;
         top:${energy[energybomb].top}px;'></div>`;
-        // energyBombs are placed similarly as other weapons, but use another trigger on a setInterval(1500) at the top
+        // energyBombs are placed similarly as other weapons, but use another trigger on a setInterval at the top
     };
 };
 
@@ -201,46 +183,37 @@ function moveAliens() {
     };
 };
 
-// var explosion = document.getElementById("explosions").innerHTML += `<div class='explosion' style='left:${aliens[alien].left}px; top:${aliens[alien].top}px;'></div>`;
-// var explosion = $("#explosions").innerHTML += `<div class='explosion' style='left:${aliens[alien].left}px; top:${aliens[alien].top}px;'></div>`;
+function distBetweenPoints(x1, y1, x2, y2) { // Used in collisionDetection, function with advanced Maths
+    return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+};
 
 function collisionDetection() {
     for (var alien = 0; alien < aliens.length; alien += 1) {
-        for (var rocket = 0; rocket < rockets.length; rocket += 1) {
-            if (rockets[rocket].top <= aliens[alien].top - 30 &&
-                rockets[rocket].top >= aliens[alien].top - 60 &&
+        for (var rocket = 0; rocket < rockets.length && rocket > maxRockets; rocket += 1) {
+            if (rockets[rocket].top <= aliens[alien].top - 70 &&
+                rockets[rocket].top >= aliens[alien].top - 40 &&
                 rockets[rocket].left >= aliens[alien].left &&
-                rockets[rocket].left <= aliens[alien].left + 20) {
+                rockets[rocket].left <= aliens[alien].left + 30) {
                 // Collision has occured, remove weapon and alien from game, increment score
-                aliens.splice(alien, 2);
-                rockets.splice(rocket, 1);
+                aliens.splice(index, 2);
+                rockets.splice(index, 1);
                 console.log("ROCKETHIT");
-                ++score;
-                console.log(score);
-                return score; // I try to return score to my variable and show it but it's not working, score keeps showing 0
+                gameOver();
             };
         };
-        for (var laser = 0; laser < lasers.length; laser += 1) {
-            if (lasers[laser].top <= aliens[alien].top - 30 &&
-                lasers[laser].top >= aliens[alien].top - 60 &&
+        for (var laser = 0; laser < lasers.length && laser > maxLasers; laser += 1) {
+            if (lasers[laser].top <= aliens[alien].top -70 &&
+                lasers[laser].top >= aliens[alien].top -40 &&
                 lasers[laser].left >= aliens[alien].left &&
-                lasers[laser].left <= aliens[alien].left + 20) {
+                lasers[laser].left <= aliens[alien].left + 30) {
                 // Collision occured, remove weapon and alien from game, increment score
-                aliens.splice(alien, 1);
-                lasers.splice(laser, 1);
+                aliens.splice(index, 1);
+                lasers.splice(index, 1);
                 console.log("LASERHIT");
-                ++score;
-                console.log(score);
-                return score; // I try to return score to my variable and show it but it's not working, score keeps showing 0
+                gameOver();
             };
         };
     };
-    // new level at alien.length == 0
-    if (aliens.length == 0 || aliens.left >= width) {
-        level++;
-        location.reload();
-        newLevel();
-    }
 };
 
 function gameOver() {
@@ -250,6 +223,8 @@ function gameOver() {
         spaceship.left >= energy[energybomb].left &&
         spaceship.left <= energy[energybomb].left + 30) {
         $(".buttoncontainer").slideDown("slow");
+        $("#score").css("z-index", "5");
+        $("#score").css("display", "block");
     };
 };
 
@@ -262,6 +237,6 @@ function gameLoop() {
     pushBombs();
     moveAliens();
     drawAliens();
-    gameOver();
     collisionDetection();
 };
+
