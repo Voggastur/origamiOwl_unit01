@@ -232,7 +232,10 @@ function collisionDetection() {
 };
 
 function checkGameover() {
-    var energybomb = $(".energybomb");
+    var energybomb = {
+        left: document.getElementsByClassName("energybomb").left,
+        top: document.getElementsByClassName("energybomb").top
+    }
     if (aliens.length == 0 || // This primary condition is usually why the game ends, no aliens left
         aliens.left >= width ||
         energybomb.top <= spaceship.top + 30 && // Trying to add collisionDetection for my own spaceship but its not working
@@ -243,6 +246,7 @@ function checkGameover() {
         let score = sessionStorage.getItem("score"); // Save score in sessionStorage
         $(".score").html("Score " + score); // Show score in class .score h2 element
         location.reload(); // reload page to repopulate with aliens
+        clearInterval(gameLoop);
     };
 };
 
