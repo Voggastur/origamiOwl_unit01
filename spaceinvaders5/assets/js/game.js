@@ -2,8 +2,6 @@ $(document).ready(function () {
     $(".button").click(function () {
         $(".buttoncontainer").slideUp("slow");
         $("#background").show();
-        var score = sessionStorage.getItem("score");
-        $(".score").html("Score " + score);
         setInterval(removeBombs, 4750);
         removeBombs();
         setInterval(triggerBombs, 4750);
@@ -195,35 +193,28 @@ function moveAliens() {
 
 function collisionDetection() {
     for (var alien = 0; alien < aliens.length; ++alien) {
-        var score = Number;
-        for (var rocket = 0; rocket < rockets.length; ++rocket) {
-            if (rockets[rocket].top <= aliens[alien].top - 30 &&
-                rockets[rocket].top >= aliens[alien].top - 60 &&
+        for (var rocket = 0; rocket < rockets.length; ++rocket) { // A lot of time testing was needed before I guessed at these arbitrary numbers which gives a good representative hitbox of the aliens
+            if (rockets[rocket].top <= aliens[alien].top - 30 && // for some reason I think everything is offset by a few pixels, because normally it would just include + 30 to include the pixelsize
+                rockets[rocket].top >= aliens[alien].top - 60 && // of the aliens
                 rockets[rocket].left >= aliens[alien].left &&
                 rockets[rocket].left <= aliens[alien].left + 30) {
-                // Collision has occured, remove weapon and alien from game, increment score
-                score += 1;
-                console.log(score);
-                aliens.splice(alien, 2);
+                // Collision has occured, remove weapon and alien from game, increment score, check gameOver condition
+                aliens.splice(alien, 2); // rockets have splash damage, represented by this .splice(alien, 2);
                 rockets.splice(rocket, 1);
                 console.log("ROCKETHIT");
-                sessionStorage.setItem("score", "Number(score)"); // Save score to sessionStorage
                 checkGameover();
                 break;
             };
         };
-        for (var laser = 0; laser < lasers.length; ++laser) {
+        for (var laser = 0; laser < lasers.length; ++laser) { // I used the same as for rockets
             if (lasers[laser].top <= aliens[alien].top - 30 &&
                 lasers[laser].top >= aliens[alien].top - 60 &&
                 lasers[laser].left >= aliens[alien].left &&
                 lasers[laser].left <= aliens[alien].left + 30) {
-                // Collision occured, remove weapon and alien from game, increment score
-                score += 1;
-                console.log(score);
+                // Collision has occured, remove weapon and alien from game, increment score, check gameOver condition
                 aliens.splice(alien, 1);
                 lasers.splice(laser, 1);
                 console.log("LASERHIT");
-                sessionStorage.setItem("score", "Number(score)"); // Save score to sessionStorage
                 checkGameover();
                 break;
             };
@@ -231,20 +222,26 @@ function collisionDetection() {
     };
 };
 
-function checkGameover() {
+if (aliens.length -= 1) {
+    var score = score + 1;
+    localStorage.setItem("score", score); // Save score to localStorage
+    console.log(parseInt(score));
+};
+
+function checkGameover() { // Evaluate score, slideDown the gameMenu, clearinterval the gameLoop, location.reload(); = my only way of repopulating with aliens at the moment
     var energybomb = {
         left: document.getElementsByClassName("energybomb").left,
         top: document.getElementsByClassName("energybomb").top
     }
     if (aliens.length == 0 || // This primary condition is usually why the game ends, no aliens left
         aliens.left >= width ||
-        energybomb.top <= spaceship.top + 30 && // Trying to add collisionDetection for my own spaceship but its not working
-        energybomb.top >= spaceship.top &&
+        energybomb.top <= spaceship.top - 30 && // Trying to add collisionDetection for my own spaceship but its not working
+        energybomb.top >= spaceship.top - 60 &&
         energybomb.left >= spaceship.left &&
         energybomb.left <= spaceship.left + 30) {
         $(".buttoncontainer").slideDown("slow"); // slideDown window upon mission complete
-        let score = sessionStorage.getItem("score"); // Save score in sessionStorage
-        $(".score").html("Score " + score); // Show score in class .score h2 element
+        var score = localStorage.getItem("score"); // Save score in sessionStorage
+        $(".score").html("Score: " + score); // Show score in class .score h2 element
         location.reload(); // reload page to repopulate with aliens
         clearInterval(gameLoop);
     };
