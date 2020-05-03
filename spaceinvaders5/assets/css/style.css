@@ -75,7 +75,7 @@ body {
 
 #background {
     display: none;
-    background-image: url("../../../spaceinvaders3/assets/images/11.jpg");
+    background-image: url("../images/11.jpg");
     background-size: cover;
     overflow: hidden;
     height: 800px;
@@ -314,7 +314,7 @@ a .snake:nth-child(4) {
 /*----- Game objects -----*/
 
 #spaceship { /*----- This is the player -----*/
-    background-image: url("../../../spaceinvaders3/assets/images/spaceship.png");
+    background-image: url("../images/spaceship.png");
     -webkit-transform: rotate(90deg);
         -ms-transform: rotate(90deg);
             transform: rotate(90deg);
@@ -327,7 +327,7 @@ a .snake:nth-child(4) {
 }
 
 .alien { /*----- This is the alien enemy -----*/
-    background-image: url("../../../spaceinvaders3/assets/images/enemy.png");
+    background-image: url("../images/enemy.png");
     background-size: cover;
     height: 30px;
     width: 30px;
@@ -341,7 +341,7 @@ a .snake:nth-child(4) {
 }
 
 .rocket { /*----- Player weapon on SPACE button -----*/
-    background-image: url("../../../spaceinvaders3/assets/images/missile2.png");
+    background-image: url("../images/missile2.png");
     background-size: cover;
     -webkit-transform: rotate(270deg);
         -ms-transform: rotate(270deg);
@@ -358,7 +358,7 @@ a .snake:nth-child(4) {
 }
 
 .laser { /*----- Player weapon on CTRL button -----*/
-    background-image: url("../../../spaceinvaders3/assets/images/laser.png");
+    background-image: url("../images/laser.png");
     -webkit-transform: rotate(90deg);
         -ms-transform: rotate(90deg);
             transform: rotate(90deg);
@@ -375,7 +375,7 @@ a .snake:nth-child(4) {
 }
 
 .energybomb { /*----- Alien weapon -----*/
-    background-image: url("../../../spaceinvaders3/assets/images/energy.png");
+    background-image: url("../images/energy.png");
     background-size: cover;
     height: 15px;
     width: 15px;
