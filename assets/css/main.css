@@ -1,0 +1,13 @@
+body {
+    margin: 0;
+}
+
+h1 {
+    text-align: center;
+    font-size: 3em;
+    text-decoration: underline overline;
+}
+
+canvas {
+    border: 1px solid #000;
+}
