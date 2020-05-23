@@ -27,7 +27,7 @@ c.arc(300, 300, 30, 0, Math.PI * 2, false);
 c.strokeStyle = 'blue';
 c.stroke();
 
-for (var i = 0; i < 100; i++) {
+for (var i = 0; i < 20; i++) {
     var x = Math.random() * window.innerWidth;
     var y = Math.random() * window.innerHeight;
     c.beginPath();
